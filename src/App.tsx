@@ -23,9 +23,7 @@ function App() {
             <CardHeader>
               <CardTitle className="text-primary">{friend.name}</CardTitle>
             </CardHeader>
-            <CardContent>
-              <img src="/placeholder.svg" alt={friend.name} className="rounded-lg" />
-            </CardContent>
+            <CardContent />
             <CardFooter>
               <Dialog>
                 <DialogTrigger asChild>
