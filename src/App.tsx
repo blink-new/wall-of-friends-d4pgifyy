@@ -7,7 +7,7 @@ const games = [
   { name: 'Minecraft Bedrock', images: ['/placeholder.svg', '/placeholder.svg'] },
   { name: 'CS2', images: ['/placeholder.svg', '/placeholder.svg'] },
   { name: 'Roblox', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'Steam Game', images: ['/placeholder.svg', '/placeholder.svg'] },
+  { name: 'Steam Games', images: ['/placeholder.svg', '/placeholder.svg'] },
 ];
 
 function App() {
@@ -19,20 +19,17 @@ function App() {
       <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {games.map((game) => (
           <Card key={game.name} className="bg-secondary border-primary">
-            <CardHeader>
-              <CardTitle className="text-primary">{game.name}</CardTitle>
-            </CardHeader>
-            <CardContent />
-            <CardFooter>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-6">
+              <CardTitle className="text-primary text-xl">{game.name}</CardTitle>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full text-primary border-primary hover:bg-primary hover:text-secondary">
-                    View Photos
+                  <Button variant="outline" size="sm" className="text-primary border-primary hover:bg-primary hover:text-secondary">
+                    Moments
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-secondary text-foreground">
                   <DialogHeader>
-                    <DialogTitle className="text-primary">Photos with {game.name}</DialogTitle>
+                    <DialogTitle className="text-primary">Moments from {game.name}</DialogTitle>
                   </DialogHeader>
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     {game.images.map((image, index) => (
@@ -41,6 +38,9 @@ function App() {
                   </div>
                 </DialogContent>
               </Dialog>
+            </CardHeader>
+            <CardContent />
+            <CardFooter>
             </CardFooter>
           </Card>
         ))}
