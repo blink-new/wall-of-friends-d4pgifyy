@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { confirmAlert } from 'react-confirm-alert';
-
 import { Button } from "@/components/ui/button";
 import UploadButton from "@/components/UploadButton";
 import { X, Heart } from "lucide-react";
-
-// Force refresh comment
-// ?forceRefresh=true
 
 interface FullScreenMomentsProps {
   isOpen: boolean;
@@ -29,6 +24,7 @@ export default function FullScreenMoments({
 }: FullScreenMomentsProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [likedMedia, setLikedMedia] = useState<string[]>([]); // Stores URLs of liked media
+  const [confirmDelete, setConfirmDelete] = useState<null | { url: string; type: "image" | "video" }>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -46,23 +42,6 @@ export default function FullScreenMoments({
     setTimeout(() => {
       onClose();
     }, 300);
-  };
-
-  const handleDeleteClick = (item: { url: string; type: "image" | "video" }) => {
-    confirmAlert({
-      title: 'Confirm to delete',
-      message: 'Are you sure you want to delete this moment?',
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => onDelete(item)
-        },
-        {
-          label: 'No',
-          onClick: () => {}
-        }
-      ]
-    });
   };
 
   const handleLikeClick = (url: string) => {
@@ -150,9 +129,9 @@ export default function FullScreenMoments({
                     {/* Delete button */}
                     <button
                       className="absolute top-1 right-1 bg-red-500 hover:bg-red-700 text-white p-1 rounded-full transition-colors"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
-                        handleDeleteClick(item);
+                        setConfirmDelete(item);
                       }}
                     >
                       <X size={16} />
@@ -161,7 +140,7 @@ export default function FullScreenMoments({
                     {/* Like button */}
                     <button
                       className="absolute top-1 left-1 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full transition-colors"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         handleLikeClick(item.url);
                       }}
@@ -172,6 +151,32 @@ export default function FullScreenMoments({
                 ))}
               </div>
             </div>
+
+            {/* Custom Delete Confirmation Modal */}
+            {confirmDelete && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60">
+                <div className="bg-white rounded-xl shadow-2xl p-8 flex flex-col items-center animate-zoom-in min-w-[300px] max-w-[90vw]">
+                  <div className="text-xl font-semibold text-gray-900 mb-4">Delete this moment?</div>
+                  <div className="flex gap-4 mt-2">
+                    <button
+                      className="px-6 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 transition"
+                      onClick={() => {
+                        onDelete(confirmDelete);
+                        setConfirmDelete(null);
+                      }}
+                    >
+                      Yes, Delete
+                    </button>
+                    <button
+                      className="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition"
+                      onClick={() => setConfirmDelete(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
