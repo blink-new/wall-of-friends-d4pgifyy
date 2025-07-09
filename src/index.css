@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "react-confirm-alert/src/react-confirm-alert.css"; /* Import react-confirm-alert CSS */
+
 @layer base {
   :root {
     --background: 0 0% 3.9%;
@@ -31,8 +33,6 @@
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 45 93% 47%;
-
-    --radius: 0.5rem;
   }
 
   .dark {

@@ -57,16 +57,10 @@ export default function App() {
     setSelectedGameIndex(null);
   }
 
-  function isLiked(url: string) {
-    const liked = localStorage.getItem(`liked_${url}`);
-    return liked === "true";
-  }
-
-  function toggleLike(url: string) {
-    const liked = isLiked(url);
-    localStorage.setItem(`liked_${url}`, (!liked).toString());
-    // Force re-render
-    setGames(games => [...games]);
+  function handleDeleteMedia(gameIdx: number, mediaToDelete: { url: string; type: "image" | "video" }) {
+    setGames(games => games.map((g, i) => 
+      i === gameIdx ? { ...g, media: g.media.filter(m => m.url !== mediaToDelete.url) } : g
+    ));
   }
 
   return (
@@ -102,7 +96,13 @@ export default function App() {
                       <span className="text-xs text-muted-foreground italic">No moments yet</span>
                     )}
                     {game.media.map((media, i) => (
-                      <div className="relative" key={i}>
+                      <button
+                        key={i}
+                        className="focus:outline-none flex-shrink-0"
+                        onClick={() => openMedia(media)}
+                        tabIndex={0}
+                        aria-label="View media"
+                      >
                         {media.type === "image" ? (
                           <img
                             src={media.url}
@@ -117,25 +117,7 @@ export default function App() {
                             muted
                           />
                         )}
-                        <button
-                          className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1"
-                          onClick={e => {
-                            e.stopPropagation();
-                            toggleLike(media.url);
-                          }}
-                          aria-label="Like"
-                        >
-                          {isLiked(media.url) ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" strokeWidth={1.5} stroke="red" className="w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.172 5.172a4 4 0 015.656 0L12 8.343l3.172-3.171a4 4 0 115.656 5.656L12 21.657l-8.828-8.829a4 4 0 010-5.656z" />
-                            </svg>
-                          ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="white" className="w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.172 5.172a4 4 0 015.656 0L12 8.343l3.172-3.171a4 4 0 115.656 5.656L12 21.657l-8.828-8.829a4 4 0 010-5.656z" />
-                            </svg>
-                          )}
-                        </button>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </CardContent>
@@ -154,6 +136,7 @@ export default function App() {
         media={selectedGameIndex !== null ? games[selectedGameIndex].media : []}
         onUpload={handleFullScreenUpload}
         onMediaClick={openMedia}
+        onDelete={(mediaToDelete) => selectedGameIndex !== null && handleDeleteMedia(selectedGameIndex, mediaToDelete)}
       />
     </div>
   );

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import UploadButton from "@/components/UploadButton";
+import { confirmAlert } from 'react-confirm-alert';
 
 interface FullScreenMomentsProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface FullScreenMomentsProps {
   media: { url: string; type: "image" | "video" }[];
   onUpload: (files: FileList) => void;
   onMediaClick: (media: { url: string; type: "image" | "video" }) => void;
+  onDelete: (media: { url: string; type: "image" | "video" }) => void;
 }
 
 export default function FullScreenMoments({
@@ -18,14 +20,19 @@ export default function FullScreenMoments({
   gameName,
   media,
   onUpload,
-  onMediaClick
+  onMediaClick,
+  onDelete
 }: FullScreenMomentsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [likedMedia, setLikedMedia] = useState<string[]>([]); // Stores URLs of liked media
 
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
+      // Load likes from localStorage when component mounts or opens
+      const storedLikes = JSON.parse(localStorage.getItem('likedMedia') || '[]');
+      setLikedMedia(storedLikes);
     } else {
       setIsVisible(false);
     }
@@ -44,6 +51,31 @@ export default function FullScreenMoments({
 
   const prevImage = () => {
     setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
+  };
+
+  const handleDeleteClick = (item: { url: string; type: "image" | "video" }) => {
+    confirmAlert({
+      title: 'Confirm to delete',
+      message: 'Are you sure you want to delete this moment?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => onDelete(item)
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+  };
+
+  const handleLikeClick = (url: string) => {
+    const newLikedMedia = likedMedia.includes(url)
+      ? likedMedia.filter(itemUrl => itemUrl !== url)
+      : [...likedMedia, url];
+    setLikedMedia(newLikedMedia);
+    localStorage.setItem('likedMedia', JSON.stringify(newLikedMedia));
   };
 
   if (!isOpen) return null;
@@ -167,6 +199,28 @@ export default function FullScreenMoments({
                         </div>
                       </div>
                     )}
+                    
+                    {/* Delete button */}
+                    <button
+                      className="absolute top-1 right-1 bg-red-500 hover:bg-red-700 text-white p-1 rounded-full transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(item);
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                    
+                    {/* Like button */}
+                    <button
+                      className="absolute top-1 left-1 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLikeClick(item.url);
+                      }}
+                    >
+                      <Heart size={16} fill={likedMedia.includes(item.url) ? "red" : "none"} stroke={likedMedia.includes(item.url) ? "red" : "currentColor"} />
+                    </button>
                   </button>
                 ))}
               </div>
