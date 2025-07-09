@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -171,14 +171,7 @@ function App() {
     ))
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online': return 'bg-green-500'
-      case 'away': return 'bg-yellow-500'
-      case 'offline': return 'bg-gray-400'
-      default: return 'bg-gray-400'
-    }
-  }
+  
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
@@ -190,33 +183,28 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-red-50 to-yellow-50">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="bg-white/90 backdrop-blur-sm border-b border-gray-300 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Users className="h-8 w-8 text-indigo-600" />
-                <h1 className="text-2xl font-bold text-gray-900">Wall of Friends</h1>
-              </div>
-              <Badge variant="secondary" className="bg-indigo-100 text-indigo-800">
-                {friends.length} Friends
-              </Badge>
+            <div className="flex items-center space-x-3">
+              <Users className="h-8 w-8 text-red-600" />
+              <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Like a Wall of Friends</h1>
             </div>
-            <Button className="bg-indigo-600 hover:bg-indigo-700">
-              <Plus className="h-4 w-4 mr-2" />
+            <Button className="bg-red-600 hover:bg-red-700">
+              <Plus className="h-5 w-5 mr-2" />
               Add Friend
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Search and Filters */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               placeholder="Search friends..."
               value={searchQuery}
@@ -260,79 +248,56 @@ function App() {
         </div>
       </div>
 
-      {/* Friends Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Friends List */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <ul className="space-y-4">
           {filteredFriends.map((friend) => (
-            <Card key={friend.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-gray-200">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center text-center space-y-4">
-                  {/* Avatar with Status */}
-                  <div className="relative">
-                    <Avatar className="h-20 w-20 ring-4 ring-white shadow-lg">
-                      <AvatarImage src={friend.avatar} alt={friend.name} />
-                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-lg">
-                        {friend.name.split(' ').map(n => n[0]).join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className={`absolute bottom-1 right-1 w-5 h-5 rounded-full border-2 border-white ${getStatusColor(friend.status)}`} />
-                  </div>
-
-                  {/* Friend Info */}
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg text-gray-900">{friend.name}</h3>
-                    <p className="text-sm text-gray-500">{friend.username}</p>
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${getStatusBadgeColor(friend.status)}`}
-                    >
-                      {friend.status.charAt(0).toUpperCase() + friend.status.slice(1)}
-                    </Badge>
-                  </div>
-
-                  {/* Bio */}
-                  <p className="text-sm text-gray-600 line-clamp-2">{friend.bio}</p>
-
-                  {/* Stats */}
-                  <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+            <li key={friend.id} className="bg-white/90 backdrop-blur-sm border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="flex items-center p-4 space-x-4">
+                <Avatar className="h-16 w-16 ring-2 ring-white shadow-md">
+                  <AvatarImage src={friend.avatar} alt={friend.name} />
+                  <AvatarFallback className="bg-gradient-to-br from-red-500 to-yellow-500 text-white text-xl font-bold">
+                    {friend.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-gray-900">{friend.name}</h3>
+                  <p className="text-sm text-gray-500">{friend.username}</p>
+                  <Badge 
+                    variant="secondary" 
+                    className={`text-xs mt-1 ${getStatusBadgeColor(friend.status)}`}
+                  >
+                    {friend.status.charAt(0).toUpperCase() + friend.status.slice(1)}
+                  </Badge>
+                  <p className="mt-2 text-gray-700 text-sm line-clamp-2">{friend.bio}</p>
+                  <div className="flex items-center space-x-4 mt-3 text-sm text-gray-600">
                     <div className="flex items-center space-x-1">
-                      <Users className="h-4 w-4" />
-                      <span>{friend.mutualFriends}</span>
+                      <Users className="h-5 w-5" />
+                      <span>{friend.mutualFriends} mutual friends</span>
                     </div>
                     <div className="text-xs">
-                      {friend.lastSeen}
+                      Last seen: {friend.lastSeen}
                     </div>
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex space-x-2 w-full">
-                    <Button
-                      variant={friend.isFollowing ? "secondary" : "default"}
-                      onClick={() => toggleFollow(friend.id)}
-                      className="flex-1"
-                      size="sm"
-                    >
-                      {friend.isFollowing ? (
-                        <>
-                          <Heart className="h-4 w-4 mr-1 fill-current" />
-                          Following
-                        </>
-                      ) : (
-                        <>
-                          <Heart className="h-4 w-4 mr-1" />
-                          Follow
-                        </>
-                      )}
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <MessageCircle className="h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    variant={friend.isFollowing ? "secondary" : "default"}
+                    onClick={() => toggleFollow(friend.id)}
+                    size="sm"
+                    className="flex items-center space-x-1"
+                  >
+                    <Heart className={`h-5 w-5 ${friend.isFollowing ? 'fill-current' : ''}`} />
+                    <span>{friend.isFollowing ? 'Liked' : 'Like'}</span>
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <MessageCircle className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* No Results */}
         {filteredFriends.length === 0 && (
@@ -345,6 +310,7 @@ function App() {
       </div>
     </div>
   )
+
 }
 
 export default App
