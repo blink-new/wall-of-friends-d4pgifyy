@@ -6,6 +6,20 @@ import UploadButton from "@/components/UploadButton";
 import MediaModal from "@/components/MediaModal";
 import FullScreenMoments from "@/components/FullScreenMoments";
 
+const LOCAL_STORAGE_KEY = 'wall_of_friends_games_v1';
+
+function loadGamesFromStorage() {
+  const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!data) return initialGames;
+  try {
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) return parsed;
+    return initialGames;
+  } catch {
+    return initialGames;
+  }
+}
+
 const initialGames = [
   { name: 'Minecraft Java', media: [] },
   { name: 'Minecraft Bedrock', media: [] },
@@ -16,11 +30,15 @@ const initialGames = [
 ];
 
 export default function App() {
-  const [games, setGames] = useState(initialGames);
+  const [games, setGames] = useState(loadGamesFromStorage());
   const [modalMedia, setModalMedia] = useState<{ url: string; type: "image" | "video" } | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [fullScreenOpen, setFullScreenOpen] = useState(false);
   const [selectedGameIndex, setSelectedGameIndex] = useState<number | null>(null);
+
+  function saveGamesToStorage(gamesToSave: typeof initialGames) {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gamesToSave));
+  }
 
   function handleUpload(gameIdx: number, files: FileList) {
     const newMedia = Array.from(files).map(file => {
@@ -28,7 +46,11 @@ export default function App() {
       const type = file.type.startsWith("video") ? "video" : "image";
       return { url, type };
     });
-    setGames(games => games.map((g, i) => i === gameIdx ? { ...g, media: [...g.media, ...newMedia] } : g));
+    setGames(games => {
+      const updated = games.map((g, i) => i === gameIdx ? { ...g, media: [...g.media, ...newMedia] } : g);
+      saveGamesToStorage(updated);
+      return updated;
+    });
   }
 
   function handleFullScreenUpload(files: FileList) {
@@ -58,9 +80,13 @@ export default function App() {
   }
 
   function handleDeleteMedia(gameIdx: number, mediaToDelete: { url: string; type: "image" | "video" }) {
-    setGames(games => games.map((g, i) => 
-      i === gameIdx ? { ...g, media: g.media.filter(m => m.url !== mediaToDelete.url) } : g
-    ));
+    setGames(games => {
+      const updated = games.map((g, i) =>
+        i === gameIdx ? { ...g, media: g.media.filter(m => m.url !== mediaToDelete.url) } : g
+      );
+      saveGamesToStorage(updated);
+      return updated;
+    });
   }
 
   return (
