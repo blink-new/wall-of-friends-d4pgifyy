@@ -2,13 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-const friends = [
-  { name: 'Alice', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'Bob', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'Charlie', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'David', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'Eve', images: ['/placeholder.svg', '/placeholder.svg'] },
-  { name: 'Frank', images: ['/placeholder.svg', '/placeholder.svg'] },
+const games = [
+  { name: 'Minecraft Java', images: ['/placeholder.svg', '/placeholder.svg'] },
+  { name: 'Minecraft Bedrock', images: ['/placeholder.svg', '/placeholder.svg'] },
+  { name: 'CS2', images: ['/placeholder.svg', '/placeholder.svg'] },
+  { name: 'Roblox', images: ['/placeholder.svg', '/placeholder.svg'] },
+  { name: 'Steam Game', images: ['/placeholder.svg', '/placeholder.svg'] },
 ];
 
 function App() {
@@ -18,10 +17,10 @@ function App() {
         <h1 className="text-5xl font-bold text-primary">Wall of Gaming Moments (WGM)</h1>
       </header>
       <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {friends.map((friend) => (
-          <Card key={friend.name} className="bg-secondary border-primary">
+        {games.map((game) => (
+          <Card key={game.name} className="bg-secondary border-primary">
             <CardHeader>
-              <CardTitle className="text-primary">{friend.name}</CardTitle>
+              <CardTitle className="text-primary">{game.name}</CardTitle>
             </CardHeader>
             <CardContent />
             <CardFooter>
@@ -33,11 +32,11 @@ function App() {
                 </DialogTrigger>
                 <DialogContent className="bg-secondary text-foreground">
                   <DialogHeader>
-                    <DialogTitle className="text-primary">Photos with {friend.name}</DialogTitle>
+                    <DialogTitle className="text-primary">Photos with {game.name}</DialogTitle>
                   </DialogHeader>
                   <div className="grid grid-cols-2 gap-4 mt-4">
-                    {friend.images.map((image, index) => (
-                      <img key={index} src={image} alt={`${friend.name} ${index + 1}`} className="rounded-lg" />
+                    {game.images.map((image, index) => (
+                      <img key={index} src={image} alt={`${game.name} ${index + 1}`} className="rounded-lg" />
                     ))}
                   </div>
                 </DialogContent>
