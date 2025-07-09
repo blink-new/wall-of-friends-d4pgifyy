@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { confirmAlert } from 'react-confirm-alert';
+
 import { Button } from "@/components/ui/button";
 import UploadButton from "@/components/UploadButton";
-import { confirmAlert } from 'react-confirm-alert';
+import { X, Heart } from "lucide-react";
+
+// Force refresh comment
+// ?forceRefresh=true
 
 interface FullScreenMomentsProps {
   isOpen: boolean;
@@ -23,7 +27,6 @@ export default function FullScreenMoments({
   onMediaClick,
   onDelete
 }: FullScreenMomentsProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [likedMedia, setLikedMedia] = useState<string[]>([]); // Stores URLs of liked media
 
@@ -43,14 +46,6 @@ export default function FullScreenMoments({
     setTimeout(() => {
       onClose();
     }, 300);
-  };
-
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % media.length);
-  };
-
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
   };
 
   const handleDeleteClick = (item: { url: string; type: "image" | "video" }) => {
@@ -115,54 +110,6 @@ export default function FullScreenMoments({
           </div>
         ) : (
           <>
-            {/* Featured Image/Video */}
-            <div className="mb-8">
-              <div className="relative max-w-4xl mx-auto">
-                <div className="relative aspect-video bg-secondary/20 rounded-lg overflow-hidden">
-                  {media[currentIndex]?.type === "image" ? (
-                    <img
-                      src={media[currentIndex].url}
-                      alt={`${gameName} moment`}
-                      className="w-full h-full object-contain cursor-pointer"
-                      onClick={() => onMediaClick(media[currentIndex])}
-                    />
-                  ) : (
-                    <video
-                      src={media[currentIndex].url}
-                      className="w-full h-full object-contain cursor-pointer"
-                      controls
-                      onClick={() => onMediaClick(media[currentIndex])}
-                    />
-                  )}
-                  
-                  {/* Navigation arrows */}
-                  {media.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                      >
-                        <ChevronLeft size={24} />
-                      </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                      >
-                        <ChevronRight size={24} />
-                      </button>
-                    </>
-                  )}
-                </div>
-                
-                {/* Image counter */}
-                {media.length > 1 && (
-                  <div className="text-center mt-4 text-white/60">
-                    {currentIndex + 1} of {media.length}
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Thumbnail Grid */}
             <div className="max-w-6xl mx-auto">
               <h3 className="text-white text-lg font-semibold mb-4">
@@ -172,10 +119,8 @@ export default function FullScreenMoments({
                 {media.map((item, index) => (
                   <button
                     key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`relative aspect-square bg-secondary/20 rounded-lg overflow-hidden hover:scale-105 transition-transform group ${
-                      index === currentIndex ? 'ring-2 ring-primary' : ''
-                    }`}
+                    onClick={() => onMediaClick(item)}
+                    className={`relative aspect-square bg-secondary/20 rounded-lg overflow-hidden hover:scale-105 transition-transform group`}
                   >
                     {item.type === "image" ? (
                       <img
@@ -190,7 +135,7 @@ export default function FullScreenMoments({
                         muted
                       />
                     )}
-                    
+
                     {/* Play icon overlay for videos */}
                     {item.type === "video" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
@@ -199,7 +144,7 @@ export default function FullScreenMoments({
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Delete button */}
                     <button
                       className="absolute top-1 right-1 bg-red-500 hover:bg-red-700 text-white p-1 rounded-full transition-colors"
@@ -210,7 +155,7 @@ export default function FullScreenMoments({
                     >
                       <X size={16} />
                     </button>
-                    
+
                     {/* Like button */}
                     <button
                       className="absolute top-1 left-1 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full transition-colors"
