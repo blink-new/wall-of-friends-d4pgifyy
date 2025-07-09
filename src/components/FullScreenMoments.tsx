@@ -52,6 +52,12 @@ export default function FullScreenMoments({
     localStorage.setItem('likedMedia', JSON.stringify(newLikedMedia));
   };
 
+  const handleDeleteClick = (item: { url: string; type: "image" | "video" }) => {
+    if (window.confirm('Are you sure you want to delete this moment?')) {
+      onDelete(item);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -131,7 +137,7 @@ export default function FullScreenMoments({
                       className="absolute top-1 right-1 bg-red-500 hover:bg-red-700 text-white p-1 rounded-full transition-colors"
                       onClick={e => {
                         e.stopPropagation();
-                        setConfirmDelete(item);
+                        handleDeleteClick(item);
                       }}
                     >
                       <X size={16} />
