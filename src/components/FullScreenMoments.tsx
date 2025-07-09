@@ -117,10 +117,12 @@ export default function FullScreenMoments({
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {media.map((item, index) => (
-                  <button
+                  <div
                     key={index}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => onMediaClick(item)}
-                    className={`relative aspect-square bg-secondary/20 rounded-lg overflow-hidden hover:scale-105 transition-transform group`}
+                    className={`relative aspect-square bg-secondary/20 rounded-lg overflow-hidden hover:scale-105 transition-transform group cursor-pointer`}
                   >
                     {item.type === "image" ? (
                       <img
@@ -166,7 +168,7 @@ export default function FullScreenMoments({
                     >
                       <Heart size={16} fill={likedMedia.includes(item.url) ? "red" : "none"} stroke={likedMedia.includes(item.url) ? "red" : "currentColor"} />
                     </button>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
